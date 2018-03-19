@@ -52,6 +52,7 @@ namespace Microwave.Test.Integration
 		[Test]
 		public void OnDoorOpen_Light_Output()
 		{
+			//Redo tests, not correct!
 			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
 			//_userInterface.Received(1).OnDoorOpened(_door,EventArgs.Empty);
 			_light.Received(1).TurnOn();
