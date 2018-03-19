@@ -64,7 +64,6 @@ namespace Microwave.Test.Integration
 			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			//_userInterface.Received(1).OnTimePressed(_timeButton, EventArgs.Empty);
 			_display.Received(1).ShowTime(1,0);
-			//Dunno
 		}
 
 
