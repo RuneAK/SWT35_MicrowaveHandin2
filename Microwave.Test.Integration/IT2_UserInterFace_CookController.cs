@@ -11,7 +11,7 @@ using MicrowaveOvenClasses.Interfaces;
 namespace Microwave.Test.Integration
 {
 	[TestFixture]
-	public class IT1_UserInterFace_CookController
+	public class IT2_UserInterFace_CookController
 	{
 
 		private IUserInterface _userInterface;
@@ -25,7 +25,7 @@ namespace Microwave.Test.Integration
 		private IDisplay _display;
 		private ILight _light;
 
-		private ICookController _cookController;
+		private CookController _cookController;
 
 		private ITimer _timer;
 		private IPowerTube _powerTube;
@@ -45,17 +45,15 @@ namespace Microwave.Test.Integration
 			_timer = Substitute.For<ITimer>();
 			_powerTube = Substitute.For<IPowerTube>();
 
-			
+			_cookController = new CookController(_timer, _display, _powerTube);
 			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
-			_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-			_userInterface.MyCooker = _cookController;
+			_cookController.UI = _userInterface;
 		}
 
 		[Test]
 		//Useless? Is in UserInterface unit test
 		public void OnDoorOpenClose_Light_OnOff()
 		{
-			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
 			_light.Received(1).TurnOn();
 			_door.Closed += Raise.EventWith(this, EventArgs.Empty);
@@ -66,7 +64,6 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetPowerTest()
 		{
-			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(1).ShowPower(50);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
@@ -79,7 +76,6 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetTimeTest()
 		{
-			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(1).ShowPower(50);
 			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
@@ -93,7 +89,6 @@ namespace Microwave.Test.Integration
 		[Test]
 		public void StartCookingTest()
 		{
-			//_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
 			SetTimeTest();
 			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_light.Received(1).TurnOn();
@@ -142,7 +137,6 @@ namespace Microwave.Test.Integration
 		[Test]
 		public void CookingCancelled()
 		{
-			//_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
 			StartCookingTest();
 			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_powerTube.Received(1).TurnOff();
@@ -156,7 +150,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		//Error found, the code does not clear the display as showed in the state machine diagram
+
 		public void CookingDoorOpened()
 		{
 			StartCookingTest();
@@ -181,15 +175,9 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		//How to do?!?
 		public void CookingFinished()
 		{
-			//StartCookingTest();
-
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
+			StartCookingTest();
 			_timer.Expired += Raise.EventWith(this, EventArgs.Empty);
 			_powerTube.Received(1).TurnOff();
 			_display.Received(1).Clear();

@@ -157,11 +157,5 @@ namespace MicrowaveOvenClasses.Controllers
                     break;
             }
         }
-
-		//Added property for CookController
-		public ICookController MyCooker
-		{
-			set { myCooker = value; }
-		}
     }
 }
