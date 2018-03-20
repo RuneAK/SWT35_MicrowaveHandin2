@@ -50,6 +50,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		//Useless? Is in UserInterface unit test
 		public void OnDoorOpenClose_Light_OnOff()
 		{
 			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
@@ -61,6 +62,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		//Useless? Is in UserInterface unit test
 		public void SetPowerTest()
 		{
 			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
@@ -74,6 +76,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		//Useless? Is in UserInterface unit test
 		public void SetTimeTest()
 		{
 			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
@@ -101,6 +104,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		//Useless? Is in UserInterface unit test
 		public void SetPowerCancelled()
 		{
 			SetPowerTest();
@@ -112,6 +116,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		//Useless? Is in UserInterface unit test
 		public void SetPowerDoorOpened()
 		{
 			SetPowerTest();
@@ -123,6 +128,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		//Useless? Is in UserInterface unit test
 		public void SetTimeDoorOpened()
 		{
 			SetTimeTest();
