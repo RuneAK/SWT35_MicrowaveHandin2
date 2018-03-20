@@ -256,6 +256,8 @@ namespace Microwave.Test.Unit
             startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
             // Now in cooking
 
+			//Added CookingIsDone(), testing when cooking is done, not when it starts
+			uut.CookingIsDone();
             display.Received(1).Clear();
         }
 

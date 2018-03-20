@@ -83,7 +83,8 @@ namespace MicrowaveOvenClasses.Controllers
                     myState = States.READY;
                     break;
                 case States.SETTIME:
-                    myDisplay.Clear();
+					//Removed Display.Clear(), not in diagrams
+                    //myDisplay.Clear();
                     myLight.TurnOn();
                     myCooker.StartCooking(powerLevel, time*60);
                     myState = States.COOKING;
@@ -125,6 +126,8 @@ namespace MicrowaveOvenClasses.Controllers
                     powerLevel = 50;
                     time = 1;
                     myState = States.DOOROPEN;
+					//Added Display.Clear() as diagram shows
+					myDisplay.Clear();
                     break;
             }
         }
@@ -154,5 +157,11 @@ namespace MicrowaveOvenClasses.Controllers
                     break;
             }
         }
+
+		//Added property for CookController
+		public ICookController MyCooker
+		{
+			set { myCooker = value; }
+		}
     }
 }

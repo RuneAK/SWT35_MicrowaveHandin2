@@ -45,16 +45,17 @@ namespace Microwave.Test.Integration
 			_timer = Substitute.For<ITimer>();
 			_powerTube = Substitute.For<IPowerTube>();
 
-			//_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+			
+			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+			_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
+			_userInterface.MyCooker = _cookController;
 		}
 
 		[Test]
 		//Useless? Is in UserInterface unit test
 		public void OnDoorOpenClose_Light_OnOff()
 		{
-			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
-				_cookController);
+			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
 			_light.Received(1).TurnOn();
 			_door.Closed += Raise.EventWith(this, EventArgs.Empty);
@@ -65,8 +66,7 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetPowerTest()
 		{
-			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
-				_cookController);
+			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(1).ShowPower(50);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
@@ -79,7 +79,7 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetTimeTest()
 		{
-			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+			//_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(1).ShowPower(50);
 			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
@@ -93,10 +93,9 @@ namespace Microwave.Test.Integration
 		[Test]
 		public void StartCookingTest()
 		{
-			_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
+			//_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
 			SetTimeTest();
 			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-			_display.Received(1).Clear();
 			_light.Received(1).TurnOn();
 			_powerTube.Received(1).TurnOn(50);
 			_timer.Received(1).Start(3*60);
@@ -143,13 +142,13 @@ namespace Microwave.Test.Integration
 		[Test]
 		public void CookingCancelled()
 		{
-			_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
+			//_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
 			StartCookingTest();
 			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_powerTube.Received(1).TurnOff();
 			_timer.Received(1).Stop();
 			_light.Received(1).TurnOff();
-			_display.Received(2).Clear();
+			_display.Received(1).Clear();
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(2).ShowPower(50);
 			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
@@ -165,7 +164,8 @@ namespace Microwave.Test.Integration
 			_powerTube.Received(1).TurnOff();
 			_timer.Received(1).Stop();
 			_light.Received(1).TurnOn();
-			_display.Received(2).Clear();
+			_display.Received(1).Clear();
+			_door.Closed += Raise.EventWith(this, EventArgs.Empty);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(2).ShowPower(50);
 			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
@@ -184,10 +184,13 @@ namespace Microwave.Test.Integration
 		//How to do?!?
 		public void CookingFinished()
 		{
-			StartCookingTest();
-			//DOES NOT WORK v
+			//StartCookingTest();
+
+			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
 			_timer.Expired += Raise.EventWith(this, EventArgs.Empty);
-			//DOES NOT WORK  ^
 			_powerTube.Received(1).TurnOff();
 			_display.Received(1).Clear();
 			_light.Received(1).TurnOff();

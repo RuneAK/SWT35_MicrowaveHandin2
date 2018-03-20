@@ -16,5 +16,7 @@ namespace MicrowaveOvenClasses.Interfaces
         void OnDoorClosed(object sender, EventArgs e);
 
         void CookingIsDone();
+
+	    ICookController MyCooker { set; }
     }
 }
