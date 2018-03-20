@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
+using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.Test.Integration
 {
 	[TestFixture]
-	class IT2_Timer_UserInterFace_CookController
+	class IT1_Button_Door
 	{
 		private IUserInterface _userInterface;
 
@@ -24,7 +26,7 @@ namespace Microwave.Test.Integration
 		private IDisplay _display;
 		private ILight _light;
 
-		private ICookController _cookController;
+		private CookController _cookController;
 
 		private ITimer _timer;
 		private IPowerTube _powerTube;
@@ -41,13 +43,16 @@ namespace Microwave.Test.Integration
 			_display = Substitute.For<IDisplay>();
 			_light = Substitute.For<ILight>();
 
-			_timer = Substitute.For<ITimer>();
+			_timer = new IT4_Timer();
+
 			_powerTube = Substitute.For<IPowerTube>();
 
-
+			_cookController = new CookController(_timer, _display, _powerTube);
 			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
-			_cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-			_userInterface.MyCooker = _cookController;
+			_cookController.UI = _userInterface;
 		}
+
+		[Test]
+
 	}
 }

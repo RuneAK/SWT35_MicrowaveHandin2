@@ -56,9 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IT1_UserInterFace_CookController.cs" />
-    <Compile Include="IT2_Timer_UserInterFace_CookController.cs" />
+    <Compile Include="IT2_UserInterFace_CookController.cs" />
+    <Compile Include="IT1_Button_Door.cs" />
+    <Compile Include="IT3_Light_Display_PowerTube.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IT4_Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
