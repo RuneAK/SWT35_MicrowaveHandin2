@@ -79,8 +79,7 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetTimeTest()
 		{
-			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
-				_cookController);
+			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
 			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(1).ShowPower(50);
 			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
