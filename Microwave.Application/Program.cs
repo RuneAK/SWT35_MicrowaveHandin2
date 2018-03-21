@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
@@ -17,6 +18,7 @@ namespace Microwave.Application
 			static void Main(string[] args)
 			{
 				// Setup all the objects
+				ManualResetEvent pause = new ManualResetEvent(false);
 				var powerButton = new Button();
 				var timeButton = new Button();
 				var startCancelButton = new Button();
@@ -30,11 +32,44 @@ namespace Microwave.Application
 				var userInterFace = new UserInterface(powerButton, timeButton, startCancelButton, door, display,light,cookController);
 				cookController.UI = userInterFace;
 
-				// Simulate user activities
-				powerButton.Press();
+				output.OutputLine("Main scenario");
+				output.OutputLine("User opens door");
+				door.Open();
+				output.OutputLine("User closes door");
+				door.Close();
+				output.OutputLine("User presses powerbutton 5 times");
+				for (int i = 0; i < 5; i++)
+				{
+					powerButton.Press();
+				}
+				output.OutputLine("User presses timebutton 1 time");
 				timeButton.Press();
+				output.OutputLine("User presses startcancelbutton");
 				startCancelButton.Press();
+				pause.WaitOne(61000);
 
+				output.OutputLine("User opens door while cooking scenario");
+				output.OutputLine("User presses powerbutton");
+				powerButton.Press();
+				output.OutputLine("User presses timebutton");
+				timeButton.Press();
+				output.OutputLine("User presses startcancelbutton");
+				startCancelButton.Press();
+				pause.WaitOne(1500);
+				output.OutputLine("User opens door");
+				door.Open();
+				door.Close();
+
+				output.OutputLine("User press startcancelbutton while cooking scenario");
+				output.OutputLine("User presses powerbutton");
+				powerButton.Press();
+				output.OutputLine("User presses timebutton");
+				timeButton.Press();
+				output.OutputLine("User presses startcancelbutton");
+				startCancelButton.Press();
+				pause.WaitOne(1500);
+				output.OutputLine("User presses startcancelbutton");
+				startCancelButton.Press();
 
 
 				// Wait while the classes, including the timer, do their job
