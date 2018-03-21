@@ -17,7 +17,7 @@ namespace Microwave.Test.Integration
 	[TestFixture]
 	public class IT1_Button_Door
 	{
-        // Substitutes
+        //Stubs
         private IDisplay _display;
 	    private ILight _light;
 	    private ITimer _timer;
@@ -25,7 +25,7 @@ namespace Microwave.Test.Integration
 	    private ICookController _cookController;
 	    private IUserInterface _userInterface;
 
-        // Units under test
+        //Units under test
         private IButton _uut_powerButton;
 		private IButton _uut_timeButton;
 		private IButton _uut_startCancelButton;
@@ -34,7 +34,7 @@ namespace Microwave.Test.Integration
         [SetUp]
 		public void SetUp()
 		{
-            // Substitute setup
+            //Stubs
 			_display = Substitute.For<IDisplay>();
 			_light = Substitute.For<ILight>();
 		    _timer = Substitute.For<ITimer>();
@@ -42,7 +42,7 @@ namespace Microwave.Test.Integration
 		    _cookController = Substitute.For<ICookController>();
 		    _userInterface = Substitute.For<IUserInterface>();
 
-            // Uut setup
+            //Uut setup
 		    _uut_powerButton = new Button();
 		    _uut_timeButton = new Button();
 		    _uut_startCancelButton = new Button();
