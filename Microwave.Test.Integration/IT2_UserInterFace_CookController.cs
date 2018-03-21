@@ -52,8 +52,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		//Useless? Is in UserInterface unit test
-		public void OnDoorOpenClose_Light_OnOff()
+		public void UI_OnDoorOpenClose_Light_OnOff()
 		{
 			_door.Open();
 			_light.Received(1).TurnOn();
@@ -62,8 +61,7 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		//Useless? Is in UserInterface unit test
-		public void SetPowerTest()
+		public void UI_SetPowerTest_DisplayShowsPower()
 		{
 			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
@@ -74,8 +72,21 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
+		public void UI_PowerOver700_PowerResets()
+		{
+			UI_SetPowerTest_DisplayShowsPower();
+			for (int i = 150; i < 700; i += 50)
+			{
+				_powerButton.Press();
+				_display.Received(1).ShowPower(i);
+			}
+			_powerButton.Press();
+			_display.ShowPower(50);
+		}
+
+		[Test]
 		//Useless? Is in UserInterface unit test
-		public void SetTimeTest()
+		public void UI_SetTimeTest_DisplayShowsTime()
 		{
 			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
@@ -88,20 +99,19 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		public void StartCookingTest()
+		public void UI_CC_StartCookingTest_LightPowerTimerOn()
 		{
-			SetTimeTest();
+			UI_SetTimeTest_DisplayShowsTime();
 			_startCancelButton.Press();
 			_light.Received(1).TurnOn();
-			_powerTube.Received(1).TurnOn(50);
+			_powerTube.Received(1).TurnOn(7);
 			_timer.Received(1).Start(3*60);
 		}
 
 		[Test]
-		//Useless? Is in UserInterface unit test
-		public void SetPowerCancelled()
+		public void UI_SetPowerCancelled_LightOffDisplayClear()
 		{
-			SetPowerTest();
+			UI_SetPowerTest_DisplayShowsPower();
 			_startCancelButton.Press();
 			_light.Received(1).TurnOff();
 			_display.Received(1).Clear();
@@ -110,22 +120,20 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		//Useless? Is in UserInterface unit test
-		public void SetPowerDoorOpened()
+		public void UI_SetPowerDoorOpened_LightOnDisplayClear()
 		{
-			SetPowerTest();
+			UI_SetPowerTest_DisplayShowsPower();
 			_door.Open();
 			_light.Received(1).TurnOn();
 			_display.Received(1).Clear();
 			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
 		}
-
+		
 		[Test]
-		//Useless? Is in UserInterface unit test
-		public void SetTimeDoorOpened()
+		public void UI_SetTimeDoorOpened_LightOnDisplayClear()
 		{
-			SetTimeTest();
+			UI_SetTimeTest_DisplayShowsTime();
 			_door.Open();
 			_light.Received(1).TurnOn();
 			_display.Received(1).Clear();
@@ -136,9 +144,9 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		public void CookingCancelled()
+		public void UI_CC_CookingCancelled_LightOffDisplayClearPowerTubeOffTimerStop()
 		{
-			StartCookingTest();
+			UI_CC_StartCookingTest_LightPowerTimerOn();
 			_startCancelButton.Press();
 			_powerTube.Received(1).TurnOff();
 			_timer.Received(1).Stop();
@@ -152,9 +160,9 @@ namespace Microwave.Test.Integration
 
 		[Test]
 
-		public void CookingDoorOpened()
+		public void UI_CC_CookingDoorOpened_LightOnDisplayClearPowerTubeOffTimerStop()
 		{
-			StartCookingTest();
+			UI_CC_StartCookingTest_LightPowerTimerOn();
 			_door.Open();
 			_powerTube.Received(1).TurnOff();
 			_timer.Received(1).Stop();
@@ -168,17 +176,17 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		public void CookingTimeTick()
+		public void CC_CookingTimeTick_DisplayTime()
 		{
-			StartCookingTest();
+			UI_CC_StartCookingTest_LightPowerTimerOn();
 			_timer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
 			_display.Received(1).ShowTime((3*60)/60, (3*60)%60);
 		}
 
 		[Test]
-		public void CookingFinished()
+		public void UI_CC_CookingFinished_PowerTubeOffDisplayClearLightOff()
 		{
-			StartCookingTest();
+			UI_CC_StartCookingTest_LightPowerTimerOn();
 			_timer.Expired += Raise.EventWith(this, EventArgs.Empty);
 			_powerTube.Received(1).TurnOff();
 			_display.Received(1).Clear();

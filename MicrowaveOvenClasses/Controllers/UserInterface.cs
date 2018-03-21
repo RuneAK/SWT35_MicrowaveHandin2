@@ -86,7 +86,8 @@ namespace MicrowaveOvenClasses.Controllers
 					//Removed Display.Clear(), not in diagrams
                     //myDisplay.Clear();
                     myLight.TurnOn();
-                    myCooker.StartCooking(powerLevel, time*60);
+					//Divide powerlevel with 7 to get procentage
+                    myCooker.StartCooking(powerLevel/7, time*60);
                     myState = States.COOKING;
                     break;
                 case States.COOKING:
