@@ -54,7 +54,7 @@ namespace Microwave.Test.Integration
 	    {
 			_uut_door.Opened += (sender, args) => _userInterface.OnDoorOpened(_uut_door, EventArgs.Empty);
 		    _uut_door.Open();
-		   _userInterface.Received(1).OnDoorOpened(_uut_door,EventArgs.Empty);
+			_userInterface.Received(1).OnDoorOpened(_uut_door,EventArgs.Empty);
 		}
 
 	    [Test]
