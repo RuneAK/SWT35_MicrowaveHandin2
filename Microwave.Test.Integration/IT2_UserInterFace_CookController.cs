@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MicrowaveOvenClasses.Boundary;
 using NSubstitute;
 using NUnit.Framework;
 using MicrowaveOvenClasses.Controllers;
@@ -13,50 +14,50 @@ namespace Microwave.Test.Integration
 	[TestFixture]
 	public class IT2_UserInterFace_CookController
 	{
+		//Stubs
+		private IDisplay _display;
+		private ILight _light;
+		private ITimer _timer;
+		private IPowerTube _powerTube;
 
-		private IUserInterface _userInterface;
-
+		//Real
 		private IButton _powerButton;
 		private IButton _timeButton;
 		private IButton _startCancelButton;
-
 		private IDoor _door;
 
-		private IDisplay _display;
-		private ILight _light;
-
-		private CookController _cookController;
-
-		private ITimer _timer;
-		private IPowerTube _powerTube;
+		//UUT
+		private IUserInterface _uut_userInterface;
+		private CookController _uut_cookController;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_powerButton = Substitute.For<IButton>();
-			_timeButton = Substitute.For<IButton>();
-			_startCancelButton = Substitute.For<IButton>();
-
-			_door = Substitute.For<IDoor>();
-
+			//Stubs
 			_display = Substitute.For<IDisplay>();
 			_light = Substitute.For<ILight>();
-
 			_timer = Substitute.For<ITimer>();
 			_powerTube = Substitute.For<IPowerTube>();
 
-			_cookController = new CookController(_timer, _display, _powerTube);
-			_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
-			_cookController.UI = _userInterface;
+			//Real
+			_powerButton = new Button();
+			_timeButton = new Button();
+			_startCancelButton = new Button();
+			_door = new Door();
+
+			//UUT
+			_uut_cookController = new CookController(_timer, _display, _powerTube);
+			_uut_userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _uut_cookController);
+			_uut_cookController.UI = _uut_userInterface;
 		}
 
 		[Test]
 		//Useless? Is in UserInterface unit test
 		public void OnDoorOpenClose_Light_OnOff()
 		{
-			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
+			_door.Open();
 			_light.Received(1).TurnOn();
-			_door.Closed += Raise.EventWith(this, EventArgs.Empty);
+			_door.Close();
 			_light.Received(1).TurnOff();
 		}
 
@@ -64,11 +65,11 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetPowerTest()
 		{
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(1).ShowPower(100);
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(1).ShowPower(150);
 		}
 
@@ -76,13 +77,13 @@ namespace Microwave.Test.Integration
 		//Useless? Is in UserInterface unit test
 		public void SetTimeTest()
 		{
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(1).ShowTime(1,0);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(1).ShowTime(2, 0);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(1).ShowTime(3, 0);
 		}
 
@@ -90,7 +91,7 @@ namespace Microwave.Test.Integration
 		public void StartCookingTest()
 		{
 			SetTimeTest();
-			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_startCancelButton.Press();
 			_light.Received(1).TurnOn();
 			_powerTube.Received(1).TurnOn(50);
 			_timer.Received(1).Start(3*60);
@@ -101,10 +102,10 @@ namespace Microwave.Test.Integration
 		public void SetPowerCancelled()
 		{
 			SetPowerTest();
-			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_startCancelButton.Press();
 			_light.Received(1).TurnOff();
 			_display.Received(1).Clear();
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(2).ShowPower(50);
 		}
 
@@ -113,10 +114,10 @@ namespace Microwave.Test.Integration
 		public void SetPowerDoorOpened()
 		{
 			SetPowerTest();
-			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
+			_door.Open();
 			_light.Received(1).TurnOn();
 			_display.Received(1).Clear();
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
 		}
 
@@ -125,12 +126,12 @@ namespace Microwave.Test.Integration
 		public void SetTimeDoorOpened()
 		{
 			SetTimeTest();
-			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
+			_door.Open();
 			_light.Received(1).TurnOn();
 			_display.Received(1).Clear();
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(1).ShowPower(50);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(1).ShowTime(1, 0);
 		}
 
@@ -138,14 +139,14 @@ namespace Microwave.Test.Integration
 		public void CookingCancelled()
 		{
 			StartCookingTest();
-			_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_startCancelButton.Press();
 			_powerTube.Received(1).TurnOff();
 			_timer.Received(1).Stop();
 			_light.Received(1).TurnOff();
 			_display.Received(1).Clear();
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(2).ShowPower(50);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(2).ShowTime(1, 0);
 		}
 
@@ -154,15 +155,15 @@ namespace Microwave.Test.Integration
 		public void CookingDoorOpened()
 		{
 			StartCookingTest();
-			_door.Opened += Raise.EventWith(this, EventArgs.Empty);
+			_door.Open();
 			_powerTube.Received(1).TurnOff();
 			_timer.Received(1).Stop();
 			_light.Received(1).TurnOn();
 			_display.Received(1).Clear();
-			_door.Closed += Raise.EventWith(this, EventArgs.Empty);
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_door.Close();
+			_powerButton.Press();
 			_display.Received(2).ShowPower(50);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(2).ShowTime(1, 0);
 		}
 
@@ -182,9 +183,9 @@ namespace Microwave.Test.Integration
 			_powerTube.Received(1).TurnOff();
 			_display.Received(1).Clear();
 			_light.Received(1).TurnOff();
-			_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_powerButton.Press();
 			_display.Received(2).ShowPower(50);
-			_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+			_timeButton.Press();
 			_display.Received(2).ShowTime(1, 0);
 		}
 	}
