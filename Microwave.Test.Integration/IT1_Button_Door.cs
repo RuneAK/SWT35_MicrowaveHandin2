@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.Core.Smtp;
 using NSubstitute;
 using NUnit.Framework;
 using MicrowaveOvenClasses.Controllers;
@@ -33,39 +34,38 @@ namespace Microwave.Test.Integration
         [SetUp]
 		public void SetUp()
 		{
-		    // Uut setup
+            // Substitute setup
+			_display = Substitute.For<IDisplay>();
+			_light = Substitute.For<ILight>();
+		    _timer = Substitute.For<ITimer>();
+			_powerTube = Substitute.For<IPowerTube>();
+		    _cookController = Substitute.For<ICookController>();
+		    _userInterface = Substitute.For<IUserInterface>();
+
+            // Uut setup
 		    _uut_powerButton = new Button();
 		    _uut_timeButton = new Button();
 		    _uut_startCancelButton = new Button();
 		    _uut_door = new Door();
-
-            // Substitute setup
-            _display = Substitute.For<IDisplay>();
-			_light = Substitute.For<ILight>();
-		    _timer = Substitute.For<ITimer>();
-			_powerTube = Substitute.For<IPowerTube>();
-		    _cookController = Substitute.For<ICookController>(_timer, _display, _powerTube);
-		    _userInterface = Substitute.For<IUserInterface>(_uut_powerButton, _uut_timeButton, _uut_startCancelButton, _uut_door, _display, _light, _cookController);
-			_cookController.UI = _userInterface;            
         }
 
 	    [Test]
-	    public void Door_Open_UserInterfaceIsReady_LightOn()
+	    public void Door_Open_UserInterface_OnDoorOpened()
 	    {
-	        _uut_door.Open();
-	        _light.Received().TurnOn();
-	    }
+			_uut_door.Opened += (sender, args) => _userInterface.OnDoorOpened(_uut_door, EventArgs.Empty);
+		    _uut_door.Open();
+		   _userInterface.Received(1).OnDoorOpened(_uut_door,EventArgs.Empty);
+		}
 
 	    [Test]
-	    public void Door_Close_DoorIsOpen_LightOff()
+	    public void Door_Close__UserInterface_OnDoorlosed()
 	    {
-	        _uut_door.Open();
+		    _uut_door.Closed += (sender, args) => _userInterface.OnDoorClosed(_uut_door, EventArgs.Empty);
 	        _uut_door.Close();
-	        _light.Received().TurnOff();
-	    }
+			_userInterface.Received(1).OnDoorClosed(_uut_door, EventArgs.Empty);
+		}
 
-        [Test]
-	    public void Door_Open_IsCooking_CookingStops()
+	    public void PowerButton_Pressed__UserInterface_OnDoorPowerButtonPressed()
 	    {
 	        _uut_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
 	        _uut_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
