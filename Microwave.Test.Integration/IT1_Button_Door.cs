@@ -33,20 +33,20 @@ namespace Microwave.Test.Integration
         [SetUp]
 		public void SetUp()
 		{
-            // Substitute setup
-			_display = Substitute.For<IDisplay>();
-			_light = Substitute.For<ILight>();
-		    _timer = Substitute.For<ITimer>();
-			_powerTube = Substitute.For<IPowerTube>();
-		    _cookController = Substitute.For<ICookController>();
-		    _userInterface = Substitute.For<IUserInterface>();
-			// _cookController.UI = _userInterface;
-
-            // Uut setup
+		    // Uut setup
 		    _uut_powerButton = new Button();
 		    _uut_timeButton = new Button();
 		    _uut_startCancelButton = new Button();
 		    _uut_door = new Door();
+
+            // Substitute setup
+            _display = Substitute.For<IDisplay>();
+			_light = Substitute.For<ILight>();
+		    _timer = Substitute.For<ITimer>();
+			_powerTube = Substitute.For<IPowerTube>();
+		    _cookController = Substitute.For<ICookController>(_timer, _display, _powerTube);
+		    _userInterface = Substitute.For<IUserInterface>(_uut_powerButton, _uut_timeButton, _uut_startCancelButton, _uut_door, _display, _light, _cookController);
+			_cookController.UI = _userInterface;            
         }
 
 	    [Test]
@@ -64,6 +64,7 @@ namespace Microwave.Test.Integration
 	        _light.Received().TurnOff();
 	    }
 
+        [Test]
 	    public void Door_Open_IsCooking_CookingStops()
 	    {
 	        _uut_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
