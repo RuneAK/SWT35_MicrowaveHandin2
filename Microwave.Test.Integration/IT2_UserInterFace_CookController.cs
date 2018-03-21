@@ -85,7 +85,6 @@ namespace Microwave.Test.Integration
 		}
 
 		[Test]
-		//Useless? Is in UserInterface unit test
 		public void UI_SetTimeTest_DisplayShowsTime()
 		{
 			_powerButton.Press();
