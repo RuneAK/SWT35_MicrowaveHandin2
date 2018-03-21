@@ -65,6 +65,7 @@ namespace Microwave.Test.Integration
 			_userInterface.Received(1).OnDoorClosed(_uut_door, EventArgs.Empty);
 		}
 
+		[Test]
 	    public void PowerButton_Pressed__UserInterface_OnPowerPressed()
 	    {
 		    _uut_powerButton.Pressed += (sender, args) => _userInterface.OnPowerPressed(_uut_powerButton, EventArgs.Empty);
@@ -72,18 +73,20 @@ namespace Microwave.Test.Integration
 			_userInterface.Received(1).OnPowerPressed(_uut_powerButton,EventArgs.Empty);
 	    }
 
+		[Test]
 		public void TimeButton_Pressed__UserInterface_OnTimePressed()
 		{
 			_uut_timeButton.Pressed += (sender, args) => _userInterface.OnTimePressed(_uut_timeButton, EventArgs.Empty);
-			_uut_powerButton.Press();
+			_uut_timeButton.Press();
 			_userInterface.Received(1).OnTimePressed(_uut_timeButton, EventArgs.Empty);
 		}
 
+		[Test]
 		public void StartCancelButton_Pressed__UserInterface_OnStartCancelPressed()
 		{
-			_uut_powerButton.Pressed += (sender, args) => _userInterface.OnPowerPressed(_uut_powerButton, EventArgs.Empty);
-			_uut_powerButton.Press();
-			_userInterface.Received(1).OnPowerPressed(_uut_powerButton, EventArgs.Empty);
+			_uut_startCancelButton.Pressed += (sender, args) => _userInterface.OnStartCancelPressed(_uut_startCancelButton, EventArgs.Empty);
+			_uut_startCancelButton.Press();
+			_userInterface.Received(1).OnStartCancelPressed(_uut_startCancelButton, EventArgs.Empty);
 		}
 	}
 }
