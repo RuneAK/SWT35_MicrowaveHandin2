@@ -72,6 +72,13 @@ namespace Microwave.Test.Integration
 			_userInterface.Received(1).OnPowerPressed(_uut_powerButton,EventArgs.Empty);
 	    }
 
+		public void TimeButton_Pressed__UserInterface_OnTimePressed()
+		{
+			_uut_timeButton.Pressed += (sender, args) => _userInterface.OnTimePressed(_uut_timeButton, EventArgs.Empty);
+			_uut_powerButton.Press();
+			_userInterface.Received(1).OnTimePressed(_uut_timeButton, EventArgs.Empty);
+		}
+
 		public void StartCancelButton_Pressed__UserInterface_OnStartCancelPressed()
 		{
 			_uut_powerButton.Pressed += (sender, args) => _userInterface.OnPowerPressed(_uut_powerButton, EventArgs.Empty);
