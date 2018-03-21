@@ -10,6 +10,5 @@ namespace MicrowaveOvenClasses.Interfaces
     {
         void StartCooking(int power, int time);
         void Stop();
-        IUserInterface UI { get; set; }
     }
 }
