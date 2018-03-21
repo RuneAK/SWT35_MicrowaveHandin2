@@ -65,16 +65,18 @@ namespace Microwave.Test.Integration
 			_userInterface.Received(1).OnDoorClosed(_uut_door, EventArgs.Empty);
 		}
 
-	    public void PowerButton_Pressed__UserInterface_OnDoorPowerButtonPressed()
+	    public void PowerButton_Pressed__UserInterface_OnPowerPressed()
 	    {
-	        _uut_powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-	        _uut_timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-	        _uut_startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
-	        _uut_door.Open();
-	        _cookController.Received().Stop();
-	        _display.Received().Clear();
-	        _light.Received().TurnOff();
+		    _uut_powerButton.Pressed += (sender, args) => _userInterface.OnPowerPressed(_uut_powerButton, EventArgs.Empty);
+			_uut_powerButton.Press();
+			_userInterface.Received(1).OnPowerPressed(_uut_powerButton,EventArgs.Empty);
 	    }
+
+		public void StartCancelButton_Pressed__UserInterface_OnStartCancelPressed()
+		{
+			_uut_powerButton.Pressed += (sender, args) => _userInterface.OnPowerPressed(_uut_powerButton, EventArgs.Empty);
+			_uut_powerButton.Press();
+			_userInterface.Received(1).OnPowerPressed(_uut_powerButton, EventArgs.Empty);
+		}
 	}
 }
