@@ -9,6 +9,7 @@ using NUnit.Framework;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
 using System.Threading;
+using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.Test.Integration
 {
@@ -40,7 +41,7 @@ namespace Microwave.Test.Integration
 			_output = Substitute.For<IOutput>();
 
 			//UUT
-			_uut_timer = new MicrowaveOvenClasses.Boundary.Timer();
+			_uut_timer = new Timer();
 
 			//Real
 			_display = new Display(_output);
@@ -75,7 +76,7 @@ namespace Microwave.Test.Integration
 			_powerButton.Press();
 			_timeButton.Press();
 			_startCancelButton.Press();
-			pause.WaitOne(60100);
+			pause.WaitOne(61000);
 			_output.Received(1).OutputLine("Light is turned off");
 			_output.Received(1).OutputLine("PowerTube turned off");
 		}
